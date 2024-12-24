@@ -20,7 +20,7 @@ const Navbar = () => {
 
   const toggleMenu = () => {
     // setOpen((prev) => !prev);
-    setOpen(!open);
+    setOpen((prev) => !prev);
   };
 
   useEffect(() => {
