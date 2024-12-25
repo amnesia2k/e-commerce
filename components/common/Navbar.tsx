@@ -12,9 +12,13 @@ import Form from "next/form";
 import { Menu, PackageIcon, ShoppingCart, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEffect, useRef, useState } from "react";
+import { useBasket } from "@/store/store";
 
 const Navbar = () => {
   const { user } = useUser();
+  const itemCount = useBasket((state) =>
+    state.items.reduce((total, item) => total + item.quantity, 0)
+  );
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
@@ -73,7 +77,9 @@ const Navbar = () => {
             >
               {/* w-[150px] */}
               <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6" />
-              {/* span item count */}
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                {itemCount}
+              </span>
               <span className="hidden lg:block">My Cart</span>
             </Link>
 
@@ -185,7 +191,9 @@ const Navbar = () => {
                 className="flex items-center space-x-2"
               >
                 <ShoppingCart className="w-5 h-5" />
-                {/* span item count */}
+                <span className="absolute right-28 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {itemCount}
+                </span>
                 <span>My Cart</span>
               </Link>
             </div>

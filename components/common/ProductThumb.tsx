@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription } from "../ui/card";
 
 const ProductThumb = ({ product }: { product: Product }) => {
   const outOfStock = product?.stock != null && product?.stock <= 0;
+
   return (
     <Card
       className={`group flex flex-col bg-white rounded-lg border border-gray-200 shadow hover:shadow-md transition-all duration-300 overflow-hidden p-3 ${outOfStock ? "opacity-50" : ""}`}
