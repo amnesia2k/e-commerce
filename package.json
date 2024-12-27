@@ -28,6 +28,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-is": "^19.0.0",
+    "react-paystack": "^6.0.0",
     "sanity": "^3.68.3",
     "styled-components": "^6.1.13",
     "tailwind-merge": "^2.5.5",
