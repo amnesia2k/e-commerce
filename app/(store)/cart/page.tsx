@@ -1,16 +1,22 @@
 "use client";
 
-// import { Metadata } from "@/actions/createCheckoutSession";
 import AddToBasket from "@/components/ui/AddToBasket";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/Loader";
 import { imageUrl } from "@/lib/imageUrl";
 import { useBasket } from "@/store/store";
 import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { PaystackButton } from "react-paystack";
+
+const PaystackButton = dynamic(
+  () => import("react-paystack").then((mod) => mod.PaystackButton),
+  {
+    ssr: false,
+  }
+);
 
 export default function BasketPage() {
   const groupedItems = useBasket((state) => state.getGroupedItems());
@@ -39,20 +45,34 @@ export default function BasketPage() {
     );
   }
 
-  console.log("Basket Items:", groupedItems);
+  // console.log("Basket Items:", groupedItems);
 
   // const public_key = process.env.NEXT_PUBLIC_PAYSTACK_TEST_PUBLIC_KEY;
-  const email = user?.emailAddresses[0]?.emailAddress;
-  const name = `${user?.firstName} ${user?.lastName}`;
+  const email = user?.emailAddresses[0]?.emailAddress || "";
+  const name = `${user?.firstName || ""} ${user?.lastName || ""}`;
+  const transactionRef = `txn_${new Date().getTime()}`;
 
   const componentProps = {
     email,
-    amount: useBasket?.getState()?.getTotalPrice() * 100,
+    amount: (useBasket?.getState()?.getTotalPrice() || 0) * 100,
     metadata: {
-      name,
+      groupedItems,
+      custom_fields: [
+        {
+          display_name: "Customer Name",
+          variable_name: "customer_name",
+          value: name,
+        },
+        {
+          display_name: "Customer Email",
+          variable_name: "customer_email",
+          value: email,
+        },
+      ],
     },
     publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
     text: "Pay Now",
+    reference: transactionRef,
     onSuccess: () => {
       alert("Payment successful!");
       router.push("/cart");
@@ -90,7 +110,7 @@ export default function BasketPage() {
   return (
     <div className="container mx-auto max-w-6xl">
       <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-grow">
           {groupedItems?.map((item) => (
             <div
@@ -131,7 +151,7 @@ export default function BasketPage() {
           ))}
         </div>
 
-        <div className="w-full md:w-80 md:sticky md:top-4 h-fit bg-white p-6 border rounded order-first md:order-last fixed bottom-0 left-0 md:left-auto">
+        <div className="w-full lg:w-80 lg:sticky lg:top-4 h-fit bg-white p-6 border rounded order-first lg:order-last fixed bottom-0 left-0 lg:left-auto">
           <h3 className="text-xl font-semibold">Order Summary</h3>
           <div className="mt-4 space-y-2">
             <p className="flex justify-between">
@@ -158,7 +178,12 @@ export default function BasketPage() {
               className="mt-4 w-full bg-[#7c3aed] text-white hover:bg-[#5d27bb] hover:text-white disabled:bg-gray-400"
             >
               {/* {isLoading ? "Processing..." : "Checkout"} */}
-              <PaystackButton {...componentProps} />
+              <PaystackButton
+                {...componentProps}
+                onSuccess={() => {
+                  console.log(componentProps);
+                }}
+              />
             </Button>
           ) : (
             <SignInButton mode="modal">
