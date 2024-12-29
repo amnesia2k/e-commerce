@@ -6,7 +6,7 @@ export default async function SearchPage({
 }: {
   searchParams: { query: string };
 }) {
-  const { query } = searchParams;
+  const { query } = await searchParams;
   const products = await searchProductByName(query);
 
   if (!products?.length) {
