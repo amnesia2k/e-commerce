@@ -5,27 +5,18 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/Loader";
 import { imageUrl } from "@/lib/imageUrl";
 import { useBasket } from "@/store/store";
-import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
-import dynamic from "next/dynamic";
+import { SignInButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-const PaystackButton = dynamic(
-  () => import("react-paystack").then((mod) => mod.PaystackButton),
-  {
-    ssr: false,
-  }
-);
+import Flutterwave from "@/lib/flutterwave";
 
 export default function BasketPage() {
   const groupedItems = useBasket((state) => state.getGroupedItems());
   const { isSignedIn } = useAuth();
-  const { user } = useUser();
   const router = useRouter();
 
   const [isClient, setIsClient] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
 
   // wait for client to mount
   useEffect(() => {
@@ -44,68 +35,17 @@ export default function BasketPage() {
       </div>
     );
   }
-
   // console.log("Basket Items:", groupedItems);
 
-  // const public_key = process.env.NEXT_PUBLIC_PAYSTACK_TEST_PUBLIC_KEY;
-  const email = user?.emailAddresses[0]?.emailAddress || "";
-  const name = `${user?.firstName || ""} ${user?.lastName || ""}`;
-  const transactionRef = `txn_${new Date().getTime()}`;
 
-  const componentProps = {
-    email,
-    amount: (useBasket?.getState()?.getTotalPrice() || 0) * 100,
-    metadata: {
-      groupedItems,
-      custom_fields: [
-        {
-          display_name: "Customer Name",
-          variable_name: "customer_name",
-          value: name,
-        },
-        {
-          display_name: "Customer Email",
-          variable_name: "customer_email",
-          value: email,
-        },
-      ],
-    },
-    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
-    text: "Pay Now",
-    reference: transactionRef,
-    onSuccess: () => {
-      alert("Payment successful!");
-      router.push("/cart");
-    },
-    onExit: () => {
-      alert("Payment Cancelled");
-    },
-  };
+  // const metadata: Metadata = {
+  //   orderNumber: crypto.randomUUID(),
+  //   customerName: user?.firstName ?? "Unknown",
+  //   customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
+  //   // clerkUserId: user?.id
+  // }
 
-  // const handleCheckout = async () => {
-  //   if (!isSignedIn) {
-  //     return;
-  //   }
-  //   setIsLoading(true);
-  //   try {
-  //     const metadata: Metadata = {
-  //       orderNumber: crypto.randomUUID(),
-  //       customerName: user?.fullName ?? "Unknown",
-  //       customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
-  //       clerkUserId: user!.id,
-  //     };
 
-  //     const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
-
-  //     if (checkoutUrl) {
-  //       window.location.href = checkoutUrl;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error Message:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   return (
     <div className="container mx-auto max-w-6xl">
@@ -171,25 +111,12 @@ export default function BasketPage() {
 
           {/* check if user is signed in */}
           {isSignedIn ? (
-            <Button
-              asChild
-              variant="outline"
-              // onClick={handleCheckout}
-              className="mt-4 w-full bg-[#7c3aed] text-white hover:bg-[#5d27bb] hover:text-white disabled:bg-gray-400"
-            >
-              {/* {isLoading ? "Processing..." : "Checkout"} */}
-              <PaystackButton
-                {...componentProps}
-                onSuccess={() => {
-                  console.log(componentProps);
-                }}
-              />
-            </Button>
+            <Flutterwave />
           ) : (
             <SignInButton mode="modal">
               <Button
                 variant="outline"
-                className="mt-4 w-full bg-[#7c3aed] text-white hover:bg-[#5d27bb]"
+                className="mt-4 w-full bg-[#7c3aed] text-white hover:text-white hover:bg-[#5d27bb]"
               >
                 Sign in to Checkout
               </Button>

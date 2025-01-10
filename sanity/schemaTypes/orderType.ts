@@ -14,25 +14,25 @@ export const orderType = defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    defineField({
-      name: "paystackCheckoutSessionId",
-      title: "Paystack Checkout Session Id",
-      type: "string",
-    }),
+    // defineField({
+    //   name: "flutterwaveCheckoutSessionId",
+    //   title: "Flutterwave Checkout Session Id",
+    //   type: "string",
+    // }),
 
-    defineField({
-      name: "paystackCustomerId",
-      title: "Paystack Customer Id",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-    }),
+    // defineField({
+    //   name: "flutterwaveCustomerId",
+    //   title: "Flutterwave Customer Id",
+    //   type: "string",
+    //   validation: (Rule) => Rule.required(),
+    // }),
 
-    defineField({
-      name: "paystackUserId",
-      title: "Paystack User Id",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-    }),
+    // defineField({
+    //   name: "flutterwaveUserId",
+    //   title: "Flutterwave User Id",
+    //   type: "string",
+    //   validation: (Rule) => Rule.required(),
+    // }),
 
     defineField({
       name: "customerName",
@@ -48,12 +48,12 @@ export const orderType = defineType({
       validation: (Rule) => Rule.required().email(),
     }),
 
-    defineField({
-      name: "paystackPaymentIntentId",
-      title: "Paystack Payment Intent Id",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-    }),
+    // defineField({
+    //   name: "paystackPaymentIntentId",
+    //   title: "Paystack Payment Intent Id",
+    //   type: "string",
+    //   validation: (Rule) => Rule.required(),
+    // }),
 
     defineField({
       name: "products",

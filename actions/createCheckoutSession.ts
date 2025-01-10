@@ -15,8 +15,8 @@ export type GroupedBasketItem = {
 };
 
 export const createCheckoutSession = async (
-  items: GroupedBasketItem[],
-  metadata: Metadata
+  items: GroupedBasketItem[]
+  // metadata: Metadata
 ) => {
   try {
     // check if any grouped items don't have a price
