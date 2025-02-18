@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import "../globals.css";
-import { Nunito } from "@next/font/google";
+import { Nunito } from 'next/font/google'
 import Navbar from "@/components/common/Navbar";
+import { SanityLive } from "@/sanity/lib/live";
 
-const nunito = Nunito({ subsets: ["latin"], weight: ["400"] });
+const nunito = Nunito({ subsets: ['latin'], weight: "400" });
 
 export const metadata: Metadata = {
   title: "Shoppr",
@@ -20,10 +21,12 @@ export default function RootLayout({
     <ClerkProvider dynamic>
       <html lang="en">
         <body className={`antialiased ${nunito.className}`}>
-          <main>
+          <main className="max-w-7xl w-full mx-auto px-5">
             <Navbar />
             {children}
           </main>
+
+          <SanityLive />
         </body>
       </html>
     </ClerkProvider>
