@@ -10,7 +10,7 @@ export default async function Home() {
   return (
     <div>
       {/* DIscount Banner */}
-      <DiscountsBanner />
+      {/* <DiscountsBanner /> */}
 
       {/* Rest of Product */}
       <div className="flex flex-col items-center min-h-screen py-4">
